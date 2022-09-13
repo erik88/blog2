@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<title>{{ metaTitle }}</title>
+
+	<meta charset="utf8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="{{metaDescription}}">
+
+    <script async src="/common.js"></script>
+    <script async src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
+
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="alternate" type="application/rss+xml" title="Get updates about c0de automatically!" width="16" height="16" href="https://www.lissel.net/lissel.rss" />
+</head>
+
+<body>
+	<div id="container">
+        <div id="title-container">
+            <a href="/lissel.rss" style="position: absolute; top: 10px; right: 0px;"><img src="/img/rss.png" width="16" height="16" alt="rss" /></a>
+            <h1 id="title"><span id="supertitle"><a href="/index.html">Lissel's code blog</a></span><span id="subtitle">Short rambles about programming</span></h1>
+        </div>
+
+		<hr class="nice" />
+
+        {{ content | safe }}
+	</div>
+</body>

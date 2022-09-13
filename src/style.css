@@ -1,0 +1,393 @@
+/* Breakpoints:
+*    0-599px
+*    600-859px
+*    850px-inf
+*/
+
+@import url('https://fonts.googleapis.com/css?family=Merriweather&display=swap');
+/* media screen size blah blah... */
+
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+/* Normal settings */
+
+/* =====================
+*		_TITLE
+* ====================== */
+
+#title-container {
+	position: relative;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+#title {
+	text-align: center;
+	margin-top: 0px;
+	/* Stupid, but might cause #container to not be placed at top of page otherwise */
+	margin-bottom: 0px;
+	font-size: 40px;
+}
+
+#title a {
+	text-decoration: none;
+	color: #444;
+}
+
+/* ---------- */
+
+@keyframes subtitle-fade-in-delayed {
+	0% { opacity: 0%; }
+	60% { opacity: 0%; }
+	100% { opacity: 100%; }
+}
+
+#subtitle {
+	display: block;
+	font-size: 12px;
+	font-style: italic;
+	font-weight: normal;
+	margin-top: 1em;
+
+	animation-name: subtitle-fade-in-delayed;
+	animation-timing-function: linear;
+	animation-duration: 3.5s;
+}
+
+/* ---------- */
+
+@keyframes supertitle-from-top {
+	0% { opacity: 0%; }
+	20% { transform: translateY(-50px); opacity: 0%; }
+	100% { transform: translateY(0px); opacity: 100%; }
+}
+
+#supertitle {
+	display: inline-block; /* Requirement for using transform-animations */
+
+	animation-name: supertitle-from-top;
+	animation-timing-function: ease-out;
+	animation-duration: 2.5s;
+}
+
+
+/* ======================
+*	_ARTICLE COMPONENTS
+* ===================== */
+
+li {
+	margin-bottom: 1em;
+}
+
+/* ------------- */
+
+pre {
+	font-family: "Source Code Pro", "Courier New", "Courier";
+	font-size: 14px;
+	overflow-x: auto;
+}
+
+pre.prettyprint {
+	white-space: pre !important;
+}
+
+/* ------------- */
+
+table {
+	border-collapse: collapse;
+	font-family: "Merriweather", sans-serif;
+	font-size: 12px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+thead tr {
+	background-color: #a74075;
+	color: #fff;
+}
+
+tr:nth-child(even) {
+	background-color: #ffe0f0
+}
+
+td, th {
+	border: 0px grey solid;
+	padding: 5px;
+}
+
+/* ------------ */
+
+.command {
+	font-family: courier;
+	white-space: nowrap;
+}
+
+/* ------------ */
+
+.quote {
+	color: #999999;
+	font-style: italic;
+	font-size: 1.2em;
+	margin-top: 2em;
+	margin-bottom: 2em;
+}
+
+.quote::before {
+	content: "“";
+	font-size: 2em;
+}
+.quote::after {
+	content: "”";
+	font-size: 2em;
+}
+
+/* ------------ */
+
+.code-header {
+	text-align: center;
+	font-family: "Merriweather", sans-serif;
+	font-size: 12px;
+	color: #222;
+	margin-top: 3px;
+	margin-bottom: -3px;
+}
+
+/* ------------ */
+
+.important-note {
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	margin-left: 20px;
+	margin-right: 20px;
+	background-color: lightsalmon;
+	font-size: larger;
+	box-shadow: 5px 5px 5px grey;
+	text-align: center;
+}
+
+@media (max-width: 599px) {
+	.important-note {
+		margin-left: 10px;
+		margin-right: 10px;
+	}
+}
+
+/* ------------ */
+
+.tab-button {
+	margin-left: 10px;
+	cursor: pointer;
+}
+
+/* ------------ */
+
+.expandable-header {
+	margin-top: 1em;
+	margin-bottom: 2em;
+	text-align: center;
+}
+
+/* Buttons */
+.expandable {
+	padding: 0.5em;
+	margin: 0.5em;
+	box-shadow: 3px 3px 3px gray;
+	border-radius: 3px;
+}
+.expandable:hover {
+	cursor: pointer;
+}
+.expandable-active-label {
+	font-weight: bold;
+	text-decoration: underline;
+	background-color: #ff3;
+}
+
+/* Children */
+.expandable-hidden {
+	opacity: 0;
+	max-height: 0;
+	overflow: hidden;
+}
+
+.expandable-shown {
+	opacity: 1;
+	max-height: 100%;
+	animation-name: expandable-show;
+	animation-duration: 1s;
+	background-color: #ff7;
+	border: 2px solid #ff3;
+	border-radius: 20px;
+}
+
+@keyframes expandable-show {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+
+/* ==========================
+*     _LAYOUT
+* =========================== */
+
+html {
+	height: 100%;
+}
+
+body {
+	color: #444;
+	margin: 0px;
+}
+
+h1, h2 {
+	font-family: sans-serif;
+}
+
+p, ul, ol, li, dd, dl, dt {
+	font-family: 'Merriweather', sans-serif;
+	font-size: 16px;
+	line-height: 190%;
+}
+
+#container {
+	background: #fefefe;
+}
+
+.tag-container .tag {
+	background-color: grey;
+	color: white;
+	border-radius: 3px;
+	padding: 3px 3px 2px 3px;
+	margin-right: 5px;
+	font-family: "Courier New", courier;
+	font-size: 12px;
+}
+
+.article-brief {
+	border-bottom: 1px solid #ddd;
+	margin-bottom: 30px;
+	padding-bottom: 10px;
+}
+
+.article-date {
+	color: #aaa;
+	font-size: 14px;
+	font-style: italic;
+	display: inline-block;
+}
+
+.article-list section p a, .article-list section h2 a {
+	color: #444;
+	text-decoration: none;
+}
+
+.article-list section h2 {
+	margin-bottom: 0.5em;
+	margin-top: 0.1em;
+}
+
+.article-list section p {
+	margin-top: 0px;
+}
+
+.article-list section {
+	border-bottom: #444;
+}
+
+article h1 {
+	font-size: 30px;
+	margin-bottom: 0px;
+}
+
+article h2 {
+	margin-top: 60px;
+}
+
+#article-index {
+	font-family: 'Merriweather', sans-serif;
+	margin-bottom: -30px;
+}
+#article-index li {
+	margin-bottom: 0.1em;
+}
+
+
+
+/* Adapted from https://codepen.io/ibrahimjabbari/pen/ozinB */
+
+@keyframes hr-start {
+	0% { transform: rotate(60deg); }
+	100% { transform: rotate(240deg) scale(175%); }
+}
+
+@keyframes hr-stop {
+	0% { transform: rotate(240deg) scale(175%); }
+	100% { transform: rotate(420deg); }
+}
+
+hr.nice {
+	border: 0px solid #999;
+	text-align: center;
+	line-height: 0px;
+	margin-top: 2em;
+	margin-bottom: 2em;
+}
+
+hr.nice:after {
+	content: '§';
+	display: inline-block;
+	position: relative;
+	padding-top: 19px;
+	padding-bottom: 21px;
+	background: #fefefe;
+	color: #999;
+	font-size: 22px;
+	font-weight: bold;
+	transform: rotate(60deg);
+
+	animation-name: hr-start, hr-stop;
+	animation-duration: 1.5s, 1.5s;
+	animation-delay: 0s, 1.5s;
+	animation-timing-function: ease-in, ease-out;
+}
+
+@media (max-width: 599px) {
+	#container {
+		padding: 20px 20px;
+	}
+	body {
+		background-color: #fefefe;
+	}
+	#about p {
+		text-align: left;
+	}
+}
+
+@media (min-width: 600px) and (max-width: 859px) {
+	#container {
+		padding: 20px 80px;
+	}
+	body {
+		background-color: #fefefe;
+	}
+	#about p {
+		text-align: justify;
+	}
+}
+
+@media (min-width: 860px) {
+	#container {
+		width: 700px;
+		padding: 20px 80px;
+		margin: 0px auto;
+		box-shadow: 0px 0px 5px gray;
+	}
+	body {
+		background: linear-gradient(to top right, #0df, papayawhip, #0df);
+		background-repeat: none;
+		background-attachment: fixed;
+		height: 100%;
+	}
+	#about p {
+		text-align: justify;
+	}
+}
