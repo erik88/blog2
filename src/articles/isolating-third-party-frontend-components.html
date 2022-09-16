@@ -1,11 +1,12 @@
 ---
 metaTitle: Isolating third party frontend components
 metaDescription: Best practices for keeping your code manageable
-articleCreated: "2021-08-01"
+date: "2021-08-01"
 ---
 
 
 <div class="tldr">
+	<h2>tl;dr</h2>
 <p>Put all third party components inside wrapper components that you create yourself. This decreases coupling, and might also improve readability and specificity.</p>
 
 <code><pre class="prettyprint lang-js">
@@ -51,7 +52,7 @@ function MyOwnCheckbox(props) {
 
 <div style="text-align: center">
 	<figure style="margin-bottom: 3em; margin-top: -1em">
-		<img src="backend-with-repository.png" style="max-width: 100%">
+		<img src="/img/backend-with-repository.png" style="max-width: 100%">
 		<figcaption>When coding the application logic, you are exposed to four nicely named functions. The Repository class shields you from the complexities of making SQL requests.</figcaption>
 	</figure>
 </div>
@@ -60,7 +61,7 @@ function MyOwnCheckbox(props) {
 
 <div style="text-align: center">
 	<figure style="margin-bottom: 3em; margin-top: -1em">
-		<img src="backend-without-repository.png" style="max-width: 100%">
+		<img src="/img/backend-without-repository.png" style="max-width: 100%">
 		<figcaption>When coding the application logic, you are exposed to all the complexity of the SqlConnection class. Instead of focusing on cats, you'll be stuck thinking about SQL.</figcaption>
 	</figure>
 </div>

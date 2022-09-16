@@ -5,6 +5,7 @@
         document.addEventListener("DOMContentLoaded", init);
 
     function init() {
+        try { initArticleHead(); } catch (e) { console.error(e); }
         try { initTabs(); } catch (e) { console.error(e); }
         try { initExpandables(); } catch (e) { console.error(e); }
         try { styleTagBackgrounds(); } catch (e) { console.error(e); }
@@ -104,6 +105,36 @@
             for (const exp of expandables) {
                 exp.addEventListener("click", onExpandableClicked(exp, group));
             }
+        }
+    }
+    // ======= ARTICLE =======
+    function initArticleHead() {
+        const toc = document.querySelector(".toc");
+        const tldr = document.querySelector(".tldr");
+        if (toc && tldr) {
+            const parent = toc.parentElement
+            const newContainer = document.createElement("div");
+            const nextElement = tldr.nextElementSibling;
+
+            parent.removeChild(toc);
+            parent.removeChild(tldr);
+            const tldrTitle = tldr.querySelector("h2");
+            if (tldrTitle) {
+                tldr.removeChild(tldrTitle);
+            }
+
+            newContainer.innerHTML = `
+                <div class="expandable-group" style="margin-bottom: -2em">
+                    <div class="expandable-header">
+                        <span class="expandable" for="#tldr-exp">tl;dr</span>
+                        <span class="expandable" for="#toc-exp">Table of contents</span>
+                    </div>
+                    <div class="expandable-hidden" id="tldr-exp">${tldr.innerHTML}</div>
+                    <div class="expandable-hidden" id="toc-exp">${toc.innerHTML}</div>
+                </div>
+            `;
+
+            parent.insertBefore(newContainer, nextElement);
         }
     }
 })();

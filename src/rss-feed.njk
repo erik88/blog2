@@ -1,0 +1,24 @@
+---
+permalink: lissel.rss
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+        <title>Lissel's code blog</title>
+        <description>The article feed containing snippets about c0de.</description>
+        <link>https://www.lissel.net/</link>
+        <lastBuildDate>{{ collections.articles | getNewestCollectionItemDate | rssdate }}</lastBuildDate>
+        <pubDate>{{ collections.articles | getNewestCollectionItemDate | rssdate }}</pubDate>
+        <ttl>1800</ttl>
+        {% for article in collections.articles | reverse %}
+            <item>
+                <title>{{article.data.metaTitle}}</title>
+                <description>{{article.data.metaDescription}}</description>
+                <link>https://www.lissel.net{{article.url}}</link>
+                <guid isPermaLink="false">https://www.lissel.net{{article.url}}</guid>
+                <pubDate>{{article.date | rssdate}}</pubDate>
+            </item>
+        {% endfor %}
+    </channel>
+</rss>

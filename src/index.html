@@ -6,11 +6,19 @@ metaDescription: Short rambles about programming patterns, software architecture
 title: Smoooth
 ---
 
-{% for article in collections.articles %}
+<div class="article-list">
+<section>
+{% for article in collections.articles reversed %}
 
-<p><a href="{{article.url}}">{{ article.data.metaTitle }}</a></p>
-
+    <div class="article-brief">
+        <div><span class="article-date">{{ article.data.date }}</span></div>
+        <h2><a href="{{article.url}}">{{ article.data.metaTitle }}</a></h2>
+        <p><a href="{{article.url}}">{{ article.data.metaDescription }}</a></p>
+    </div>
+    
 {% endfor %}
+</section>
+</div>
 
 <hr class="nice" />
 <section id="about">

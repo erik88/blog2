@@ -1,51 +1,27 @@
 ---
 metaTitle: The Single Responsibility Principle explained with lego
 metaDescription: Never do more than one thing
-articleCreated: "2022-07-10"
-ogImage: img/legoSrp.png
+date: "2022-07-10"
+ogImage: /img/legoSrp.png
 ---
 
 <div class="tldr">
+    <h2>tl;dr</h2>
     <p>The single responsibility principle states that a class should never do more than one thing.</p>
 
     <p>Don't do this:</p>
 
     <div style="text-align: center; margin-top: 50px; margin-bottom:50px;">
-        <img src="lego-srp.png" style="max-width: 100%" />
+        <img src="/img/lego-srp.png" style="max-width: 100%" />
     </div>
 </div>
-
-<!--
-<p>heading Getting our priorities straight</p>
-
-<p>It is said that 80% of the cost of a system happens after the system is launched. Reasons for this could be new features, changes, operations, and bugs.</p>
-
-<p>The implications are huge - <b>your code-writing speed is not important</b>. What is important is how easily existing code can be:</p>
-<ul>
-    <li>Understood</li>
-    <li>Modified</li>
-    <li>Re-used</li>
-</ul>
-
-<p>heading Principles</p>
-
-<p>To guide us when making decisions on <b>how</b> to write code, we use principles. Juxtaposing different principles against each other helps us to understand the tradeoffs between different decisions.</p>
-
-<p>The SOLID principles are well established in the OOP-community, and they consist of the:</p>
-<ul>
-    <li><b>S</b>ingle responsibility principle</li>
-    <li><b>O</b>pen/closed principle</li>
-    <li><b>L</b>iskov substitution principle</li>
-    <li><b>I</b>nterface segregation principle</li>
-    <li><b>D</b>ependency inversion principle</li>
-</ul>-->
 
 <h2 id="the-ice-cream-program">The ice-cream program</h2>
 
 <p>Say we are trying to build an ice-cream program. Exactly what it does is not important, but it will need some logging, database connectivity and stream reading.</p>
 
 <div style="text-align: center; margin-top: 50px; margin-bottom:50px;">
-	<img src="lego-solid-program0.png" style="max-width: 100%" />
+	<img src="/img/lego-solid-program0.png" style="max-width: 100%" />
 </div>
 
 <p>Let us define an interface that our program can use for the stream reading:</p>
@@ -62,7 +38,7 @@ interface IStreamReader {
 <p>Now, we'll try to implement the <code>IStreamReader</code>:</p>
 
 <div style="text-align: center; margin-top: 50px; margin-bottom:50px;">
-    <img src="lego-solid-program1.png" style="max-width: 100%" />
+    <img src="/img/lego-solid-program1.png" style="max-width: 100%" />
 </div>
 
 <code><pre class="prettyprint lang-csharp">
@@ -125,13 +101,13 @@ public class IceCreamStreamReader : IStreamReader {
 <p>I.e. we thought we were implementing a single nice lego brick:</p>
 
 <div style="text-align: center; margin-top: 50px; margin-bottom:50px;">
-    <img src="lego-first-attempt-idea.png" style="max-width: 100%" />
+    <img src="/img/lego-first-attempt-idea.png" style="max-width: 100%" />
 </div>
 
 <p>But in fact this is what we did. Yuck:</p>
 
 <div style="text-align: center; margin-top: 50px; margin-bottom:50px;">
-    <img src="lego-first-attempt-reality.png" style="max-width: 100%" />
+    <img src="/img/lego-first-attempt-reality.png" style="max-width: 100%" />
 </div>
 
 <p>Allow me to reiterate the Single Responsiblity Principle:</p>
@@ -143,7 +119,7 @@ public class IceCreamStreamReader : IStreamReader {
 <p>Having identified all the things that our class does, let us break it into separate components:</p>
 
 <div style="text-align: center; margin-top: 50px; margin-bottom:50px;">
-    <img src="lego-second-attempt.png" style="max-width: 100%" />
+    <img src="/img/lego-second-attempt.png" style="max-width: 100%" />
 </div>
 
 <code><pre class="prettyprint lang-csharp">
@@ -266,7 +242,7 @@ public class IceCreamValidator : IIceCreamValidator {
 <p>Now we can split the main class into its two different responsiblities:</p>
 
 <div style="text-align: center; margin-top: 50px; margin-bottom:50px;">
-    <img src="lego-final-attempt.png" style="max-width: 100%" />
+    <img src="/img/lego-final-attempt.png" style="max-width: 100%" />
 </div>
 
 <code><pre class="prettyprint lang-csharp">

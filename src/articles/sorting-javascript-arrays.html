@@ -1,10 +1,11 @@
 ---
 metaTitle: Sorting javascript arrays on multiple properties
 metaDescription: A nice pattern for sorting tables of data.
-articleCreated: "2019-03-12"
+date: "2019-03-12"
 ---
 
 <div class="tldr">
+	<h2>tl;dr</h2>
 
 	<div class="tab-pane">
 		<div class="tab" data-title="Sleek">
@@ -162,7 +163,7 @@ let c = getErrorMessage() || ""
 			values</a>.</p>
 
 
-#heading#Composing compare-functions
+<h2 id="composing-compare-functions">Composing compare-functions</h2>
 
 	<p>Since a compare function will return 0 (a falsy value) only when the order doesn't matter, we can
 		chain compare functions with ||. This allows us to simply think about sorting one property at a

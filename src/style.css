@@ -217,6 +217,8 @@ td, th {
 	background-color: #ff7;
 	border: 2px solid #ff3;
 	border-radius: 20px;
+	padding-left: 1em;
+	padding-right: 1em;
 }
 
 @keyframes expandable-show {

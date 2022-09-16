@@ -1,11 +1,12 @@
 ---
 metaTitle: Do not null-check lists
 metaDescription: An unusual code smell
-articleCreated: "2020-10-12"
+date: "2020-10-12"
 ---
 
 
 <div class="tldr">
+	<h2>tl;dr</h2>
 	<p>Lists should never be allowed to be null, this is a code smell:</p>
 
 	<code><pre class="prettyprint lang-csharp">
@@ -26,7 +27,7 @@ articleCreated: "2020-10-12"
 <p>After some digging, you discover that the list originates from a web request:</p>
 
 <div style="text-align: center">
-	<img src="nullable_list.svg" />
+	<img src="/img/nullable_list.svg" />
 </div>
 
 <p>The correct thing to do would be to make sure that <i>HouseController</i> cannot pass a null-valued list. Either, an empty list should be created in <i>HouseController</i>, or <i>HouseController</i> should deny the web request.</p>
