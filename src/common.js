@@ -40,8 +40,8 @@
         var tabPanes = document.querySelectorAll(".tab-pane");
         for (var i = 0; i < tabPanes.length; i++) {
             (function () {
-                var tabPane = tabPanes[i];
-                var tabList = document.createElement("div");
+                const tabPane = tabPanes[i];
+                const tabList = document.createElement("div");
                 var tabNodes = tabPane.querySelectorAll(".tab");
                 var hideTabs = function () { for (var n = 0; n < tabNodes.length; n++) tabNodes[n].style.display = "none"; };
                 var deselectButtons = function () {
