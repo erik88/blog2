@@ -74,6 +74,15 @@
 *	_ARTICLE COMPONENTS
 * ===================== */
 
+figure {
+	text-align: center;
+	margin-bottom: 3em;
+}
+
+figure img {
+	max-width: 100%;
+}
+
 li {
 	margin-bottom: 1em;
 }

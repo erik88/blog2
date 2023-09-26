@@ -7,6 +7,7 @@ layout: "main.njk"
     <div>
         <span class="article-date">{{ date }}</span>
     </div>
+        <div>{{ metaDescription }}</div>
     {{ content | toc | safe }}
     {{ content | safe }}
 </article>
