@@ -1,0 +1,234 @@
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Ordspel</title>
+    <style>
+        #content {
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #content>* {
+            width: 19.5%;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            margin-bottom: 8px;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .revealed.type1 {
+            background-color: #3333ff;
+        }
+
+        .revealed.type2 {
+            background-color: #cc0000;
+        }
+
+        .revealed.type3 {
+            background-color: #aaaa00;
+        }
+
+        .revealed.type4 {
+            background-color: #000000;
+        }
+
+        .master.type1 {
+            color: #3333ff;
+        }
+
+        .master.type2 {
+            color: #cc0000;
+        }
+
+        .master.type3 {
+            color: #aaaa00;
+        }
+
+        .master.type4 {
+            color: #000000;
+        }
+
+        .revealed {
+            color: rgba(0, 0, 0, 0.2) !important;
+        }
+
+        #setup {
+            font-size: 2em;
+            margin-top: 1em;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 400px;
+        }
+
+        #setup input {
+            font-size: 1em
+        }
+
+        #game-id-div,
+        #teamlead-div,
+        #start-div {
+            margin-top: 1rem;
+        }
+
+        #seed {
+            margin-left: 0.5em;
+            width: 3em;
+        }
+
+        #about {
+            font-size: 1rem;
+            margin-top: 2rem;
+            color: #202020;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="setup">
+        <div id="game-id-div">
+            <label for="seed">Spel-ID</label><input type="number" id="seed"></input>
+        </div>
+        <div id="teamlead-div">
+            <label for="master">Lagledare</label><input type="checkbox" id="master">
+        </div>
+        <div id="start-div">
+            <input type="button" id="start" value="starta"></input>
+        </div>
+        <div id="about">
+            <hr>
+            <p><strong><u>Regler</u></strong><br>Spelarna delas upp i lag röd och lag blå, där varje lag har en
+                lagledare. I varje spelomgång visas 25 ord, varav 9 blå och 8 röda. Endast lagledare kan se färgen på
+                orden, men de får bara kommunicera begränsat. Målet är att först få fram alla lagets ord.</p>
+            <p>Blått lag börjar. Lagledaren kommer på och delger<ul>
+                    <li><em>Ett</em> ord (som inte är bland de 25) som ledtråd.</li>
+                    <li>Antal ord som ledtråden gäller.</li>
+                </ul>De blå lagkamraterna väljer sedan vilka ord som ska väljas, ett i taget. Genom att trycka på valda
+                ord offentliggörs de för alla spelare. Blått lags tur tar slut när de gissat det antal ord som deras
+                lagledare angivit, eller om de gissar på ett ord som inte är blått.</p>
+            <p>Om ett lag väljer det svarta ordet så vinner motståndarlaget direkt.</p>
+            <hr>
+            <p>Det finns för närvarande <span id="wordCount">_</span> ord inlagda.</p>
+        </div>
+    </div>
+    <div id="content" style="display: none">
+
+    </div>
+    <script>
+        document.querySelector("#start").addEventListener("click", function () { start(); });
+        document.querySelector("#content").addEventListener("click", function (evt) { itemClicked(evt.target); });
+
+        var seed = 1;
+        var master = false;
+        function random() {
+            var x = Math.sin(seed) * 10000; 
+            seed += 123.5; // If we only used seed++, level x would be very similar to level (x+1).
+            return x - Math.floor(x);
+        }
+
+        var words = [];
+        var revealed = [];
+        var map = [];
+        var wordSource = ["ström", "lax", "box", "plan", "vägg", "kåk", "guld", "arena", "yxa", "drake", "kruka", "dinosaurie", "bild", "lur", "block", "kanon", "paraply", "isberg",
+            "Sverige", "kontroll", "gren", "pyamas", "matta", "häst", "tåg", "köttbulle", "blad", "ljus", "parlament", "etta", "glas", "gång", "satellit", "stjärna", "kast", "fontän",
+            "växel", "grund", "berg", "knapp", "länk", "spindel", "noter", "kalas", "rep", "piano", "pol", "djup", "pil", "het", "grad", "cirkel", "växt", "olja", "uttag", "vän",
+            "tal", "frö", "mås", "droppe", "bas", "kort", "bank", "väg", "rest", "hög", "snack", "mage", "vår", "måndag", "skrapa", "tur", "galge", "steg", "vals", "gran", "gift",
+            "nål", "ugn", "salva", "hage", "tak", "kvitto", "rap", "platta", "moln", "sist", "papper", "eko", "biljard", "natt", "spel", "magnet", "mus", "trä", "fjäder",
+            "krona", "ven", "tunga", "skinka", "vik", "visa", "tjur", "ko", "dryg", "medel", "kola", "slag", "täcke", "rymd", "tavla", "publik", "hår", "rå", "stål", "vagn",
+            "blöja", "mast", "såg", "kaka", "ledning", "vin", "Venus", "morgon", "kod", "ballong", "balkong", "mapp", "fil", "bil", "ben",
+            "spik", "krok", "flaska", "rea", "trapp", "kulle", "ram", "lera", "handduk", "tennis", "golf", "nöt", "dans", "kram", "kyss",
+            "prins", "häxa", "troll", "tangent", "fluga", "grav"];
+
+        document.querySelector("#wordCount").innerHTML = wordSource.length;
+
+        // For testing
+        function detectDuplicates() {
+            let prevWord = "";
+            let doubles = [];
+            for (const w of wordSource.sort()) {
+                if (w == prevWord) doubles.push(w);
+                prevWord = w;
+            }
+            console.log(doubles);
+        }
+
+        function start() {
+            history.pushState({ game: true }, "GAME ON");
+
+            seed = document.querySelector("#seed").value | 0;
+            master = !!document.querySelector("#master").checked;
+            document.querySelector("#setup").style.display = "none";
+            pickWords();
+            generateMap();
+            draw();
+            document.querySelector("#content").style.display = "flex";
+        }
+
+        function pickWords() {
+            words = [];
+            var source = JSON.parse(JSON.stringify(wordSource));
+            for (var i = 0; i < 25; i++) {
+                var index = Math.floor(random() * source.length);
+                words.push(source[index]);
+                source.splice(index, 1);
+            }
+            revealed = words.map(w => false); // Array(25) of false
+        }
+
+        function generateMap() {
+            map = [];
+            // 1 = blue
+            // 2 = red
+            // 3 = neutral
+            // 4 = loss
+            var source = [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4];
+            for (var i = 0; i < 25; i++) {
+                var index = Math.floor(random() * source.length);
+                map.push(source[index]);
+                source.splice(index, 1);
+            }
+        }
+
+        function draw() {
+            var content = document.querySelector("#content");
+            var stringBuilder = "";
+            for (var i = 0; i < words.length; i++) {
+                var w = words[i];
+                stringBuilder += "<div data-id=\"" + i + "\" class=\"" + (master ? "master" : "player") + " type" + (map[i]) + " " + (revealed[i] ? "revealed" : "") + "\">" + w + "</div>";
+            }
+            content.innerHTML = stringBuilder;
+        }
+
+        function itemClicked(el) {
+            if (el.dataset.id) {
+                var id = el.dataset.id | 0;
+                if (!revealed[id]) {
+                    revealed[id] = true;
+                    draw();
+                }
+            }
+        }
+
+        window.onpopstate = function (event) {
+            console.log("onpopstate", event);
+            if (event.state) {
+                // Somebody pushed forward
+                if (words.length) {
+                    document.querySelector("#content").style.display = "flex";
+                    document.querySelector("#setup").style.display = "none";
+                } else {
+                    start();
+                }
+            } else {
+                document.querySelector("#content").style.display = "none";
+                document.querySelector("#setup").style.display = "block";
+            }
+        }
+    </script>
+</body>
+
+</html>
