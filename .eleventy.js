@@ -5,6 +5,7 @@ module.exports = function (eleventyConfig) {
 	eleventyConfig.addPassthroughCopy("./src/style.css");
 	eleventyConfig.addPassthroughCopy("./src/common.js");
 	eleventyConfig.addPassthroughCopy("./img/");
+	eleventyConfig.addPassthroughCopy("./aoc/");
 
 	eleventyConfig.addPlugin(pluginTOC); // TOC = Table of Contents
 	eleventyConfig.addPlugin(pluginRss);

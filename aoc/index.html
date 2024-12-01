@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8" />
+        <title>AoC 2024</title>
+        <style>
+            td, th { padding: 8px; }
+            td:nth-child(2), th:nth-child(2) {
+                border-right: 1px solid gray
+            }
+            .incl { color: #ccc}
+        </style>
+    </head>
+    <body>
+        <script type="module">
+            const starsAfterBonus = (u) => {
+                if (u.nonDev) return u.stars*4;
+                return u.stars + (u.bonus ? 1 : 0)*10;
+            }
+
+            const included = `<span class="incl">(already included in score)</span>`;
+            const result = await fetch("./result.json");
+            const lastMod = result.headers.get("last-modified");
+            const data = await result.json();
+            const rows = data
+            .sort((a,b) => a.name > b.name)
+            .map(u =>`
+                <tr>
+                    <td>${u.name}</td>
+                    <td>${starsAfterBonus(u)}</td>
+                    <td>${(u.bonus && `new-language ${included}`) || u.nonDev && `Non-dev ${included}` || ""}</td>
+                </tr>
+            `).join("");
+            const tableHtml = `
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Stars</th>
+                    <th>Bonus (already included in score)</th>
+                </tr>
+                ${rows}
+            </table>`;
+            console.log(tableHtml);
+            document.body.innerHTML = `<p>Data uploaded: ${new Date(lastMod)}</p> ` + tableHtml;
+        </script>
+    </body>
+</html>
