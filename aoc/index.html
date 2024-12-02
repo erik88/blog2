@@ -13,21 +13,29 @@
     </head>
     <body>
         <script type="module">
-            const starsAfterBonus = (u) => {
+            const starsAfterBonus = (u, boni) => {
                 if (u.nonDev) return u.stars*4;
                 return u.stars + (u.bonus ? 1 : 0)*10;
             }
 
             const included = `<span class="incl">(already included in score)</span>`;
             const result = await fetch("https://erikaoc2024storage.blob.core.windows.net/blobstore/result.json", {headers: {"X-PINGOVER": "pingpong"}});
+            const boniResult = await fetch("https://erikaoc2024storage.blob.core.windows.net/blobstore/boni.json", {headers: {"X-PINGOVER": "pingpong"}});
+            const boni = await boniResult.json();
             const lastMod = result.headers.get("last-modified");
             const data = await result.json();
             const rows = data
             .sort((a,b) => a.name > b.name)
+            .map(u => ({
+                    ...u,
+                    nonDev: boni.nonDev.includes(u.id),
+                    bonus: boni.bonus.includes(u.id)
+                })
+            )
             .map(u =>`
                 <tr>
                     <td>${u.name}</td>
-                    <td>${starsAfterBonus(u)}</td>
+                    <td>${starsAfterBonus(u, boni)}</td>
                     <td>${(u.bonus && `new-language ${included}`) || u.nonDev && `Non-dev ${included}` || ""}</td>
                 </tr>
             `).join("");
