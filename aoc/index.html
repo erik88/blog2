@@ -19,7 +19,7 @@
             }
 
             const included = `<span class="incl">(already included in score)</span>`;
-            const result = await fetch("./result.json");
+            const result = await fetch("https://erikaoc2024storage.blob.core.windows.net/blobstore/result.json", {headers: {"X-PINGOVER": "pingpong"}});
             const lastMod = result.headers.get("last-modified");
             const data = await result.json();
             const rows = data
