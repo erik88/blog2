@@ -40,8 +40,13 @@
                 </tr>
                 ${rows}
             </table>`;
-            console.log(tableHtml);
-            document.body.innerHTML = `<p>Data uploaded: ${new Date(lastMod)}</p> ` + tableHtml;
+            
+            const zeroPad = (num) => num < 10 ? "0"+num : String(num);
+            const d = new Date(lastMod);
+            const date = d.getFullYear() + "-" + zeroPad(d.getMonth()+1) + "-" + zeroPad(d.getDay()+1);
+            const time = zeroPad(d.getHours()) + ":" + zeroPad(d.getMinutes())
+
+            document.body.innerHTML = `<p>Data updated: ${date} ${time}</p> ` + tableHtml;
         </script>
     </body>
 </html>
