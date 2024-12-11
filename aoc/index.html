@@ -51,7 +51,7 @@
             
             const zeroPad = (num) => num < 10 ? "0"+num : String(num);
             const d = new Date(lastMod);
-            const date = d.getFullYear() + "-" + zeroPad(d.getMonth()+1) + "-" + zeroPad(d.getDay()+1);
+            const date = d.getFullYear() + "-" + zeroPad(d.getMonth()+1) + "-" + zeroPad(d.getDate());
             const time = zeroPad(d.getHours()) + ":" + zeroPad(d.getMinutes())
 
             document.body.innerHTML = `<p>Data updated: ${date} ${time}</p> ` + tableHtml;
