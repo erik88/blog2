@@ -25,7 +25,7 @@
             const lastMod = result.headers.get("last-modified");
             const data = await result.json();
             const rows = data
-            .sort((a,b) => a.name > b.name)
+            .sort((a,b) => a.name.localeCompare(b.name))
             .map(u => ({
                     ...u,
                     nonDev: boni.nonDev.includes(u.id),
