@@ -19,19 +19,23 @@
             }
 
             const included = `<span class="incl">(already included in score)</span>`;
-            const result = await fetch("https://erikaoc2024storage.blob.core.windows.net/blobstore/result.json", {headers: {"X-PINGOVER": "pingpong"}});
-            const boniResult = await fetch("https://erikaoc2024storage.blob.core.windows.net/blobstore/boni.json", {headers: {"X-PINGOVER": "pingpong"}});
-            const boni = await boniResult.json();
+
+            const decoder = new TextDecoder("iso-8859-1");
+            const result = await fetch("/aoc/result.json", {headers: {"X-PINGOVER": "pingpong"}});
+            const boniResult = await fetch("/aoc/boni.json", {headers: {"X-PINGOVER": "pingpong"}});
+            const boniBytes = await boniResult.arrayBuffer();
+            const boni = JSON.parse(decoder.decode(boniBytes));
             const lastMod = result.headers.get("last-modified");
-            const data = await result.json();
+            const dataBytes = await result.arrayBuffer();
+            const data = JSON.parse(decoder.decode(dataBytes));
             const rows = data
-            .sort((a,b) => a.name.localeCompare(b.name))
             .map(u => ({
                     ...u,
                     nonDev: boni.nonDev.includes(u.id),
                     bonus: boni.bonus.includes(u.id)
                 })
             )
+            .sort((a,b) => Math.sign(starsAfterBonus(b, boni) - starsAfterBonus(a, boni)))
             .map(u =>`
                 <tr>
                     <td>${u.name}</td>
