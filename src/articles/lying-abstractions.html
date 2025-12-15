@@ -1,0 +1,190 @@
+---
+metaTitle: Lying abstractions
+metaDescription: Fixing your function names
+date: "2025-12-15"
+---
+
+
+<div class="tldr">
+	<h2>tl;dr</h2>
+	<ul>
+		<li>Functions are abstraction boundaries. Like modules and interfaces, functions create boundaries that hide implementation details.</li>
+		<li>When a function does more (or something else) than the name suggests, it is lying to you and your peers.</li>
+		<li>Being decieved by the function name, you will write code that causes bugs.</li>
+	</dl>
+</div>
+
+
+<h2 id="a-programmers-main-job">A programmer's main job</h2>
+
+<p>Every successful system inevitably grows in size and features. Our job is to release new features, while keeping the system stable and bug-free.</p><p> This is a dichotomy - the more state we need to "keep in our head" - the worse we will perform. We are in a constant battle to keep the system in such a shape that we are able to update and extend it. And so:</p>
+
+<p class="important-note">A programmer's main job is to fight complexity</p>
+
+<h2 id="functions-are-abstraction">Functions are abstractions</h2>
+
+<p>The common way to see functions: "they are a way to re-use code", completely misses their most important aspect!</p>
+
+<p>Functions are <u>abstractions</u>, in the same way as modules or interfaces. They create a boundary that hides implementation details. This keeps the complexity down, since you can reason about code at a higher level - without needing to care about the details.</p>
+
+<code><pre class="prettyprint lang-csharp">
+// If we don't care about the details
+// This is easier to reason about...
+WaterFlower("flower2", "10 ml");
+
+
+// ... than this
+var waterCan = WaterCanPool.GetFirstAvailableWaterCan();
+if (waterCan is null) {
+    throw new NoAvailableWaterCanException();
+}
+waterCan.FillUp();
+boolean hasWatered = false;
+for(var flower of flowers) {
+    if (flower.name.Trim() == "flower2") {
+        flower.ApplyWater("10 ml");
+        break;
+    }
+}
+if (!hasWatered) {
+    throw new FlowerNotFoundException("flower2");
+}
+
+</pre></code>
+
+<p>When you call a function, you should always be able to understand what it does <u>without looking at its implementation</u>. But this only works if the abstraction is honest.</p>
+
+
+
+<h2 id="lying-abstractions">Lying abstractions</h2>
+
+<p>Consider this example:</p>
+
+<code><pre class="prettyprint lang-js">
+function getUserMarketingCampaign(userid) {
+    // implementation
+}
+</pre></code>
+
+<p>What does this function do? Clearly it <b>gets</b> something - it retrieves the user's marketing campaign. Simple, right?</p>
+
+<p>But look at the actual implementation:</p>
+
+<code><pre class="prettyprint lang-js">
+function getUserMarketingCampaign(userid) {
+    const campaign = database.query(sql`SELECT * FROM campaigns WHERE user = ${userid}`);
+
+    if (!campaign) {
+        // The lie: it also creates!
+	return database.insert(sql`INSERT INTO campaigns(user_id) VALUES(${userid})`);
+    }
+
+    return campaign;
+}
+</pre></code>
+
+<p>The function doesn't just <i>get</i> the requested campaign. If the campaign doesn't exist, <span style="color:crimson; font-weight:bold">a new campaign is created</span>. The abstraction is lying to you!</p>
+
+<p>Picture the following scenario:</p>
+
+<ul>
+		<li>A developer is implementing a feature which will only work for users having a marketing campaign. They use the already ubiquitous function <code>getUserMarketingCampaign()</code></li>
+	<li>You are doing code review, looking at a diff - and make the reasonable assumption that <code>const campaign = getUserMarketingCampaign(123);</code> will do what it says and try to fetch a campaign.</li>
+	<li>The code is deployed, and now ineglible users are having marketing campagins created at an alarming rate.</li>
+	<li>The business gets sued by EU GDPR lawyers and goes bankrupt.</li>
+</ul>
+
+<p>All this because of a function name!</p>
+
+<h2 id="good-naming">Good naming</h2>
+
+<p>We need to use good and precise names for our functions. In this case:</p>
+
+<code><pre class="prettyprint lang-js">
+function getOrCreateUserMarketingCampaign(userid) {
+    // ...
+}
+</pre></code>
+
+<p>Now the name accurately describes what the function does. Yes, it's a bit wordier. <span style="color:seagreen; font-weight:bold">I don't care.</span></p>
+
+<p>Someone might say: "That's too long! Function names should be concise!" But this misses the point entirely. <b>The abstraction boundary has to be clear.</b></p>
+
+<h2 id="functions-as-a-contract">Functions as a contract</h2>
+
+<p>Based on a function's in-parameters, we expect it to return specific values or perform specific tasks. This can be seen as a technical "contract", and is often validated in unit tests. But:</p>
+
+<p class="important-note">The function's name is a contract between you and future readers of the code (human, AI, you).</p>
+
+<p>Therefore the name must describe <u>clearly</u> what the function does, especially including unexpected conditionals or side effects.</p>
+
+<p>Make your abstractions honest. <span style="color: crimson; font-weight: bold">Don't hide surprises behind innocent-sounding names.</span> If a function gets <i>or creates</i>, say so. If it validates <i>and throws</i>, say so. Heck, even if it gets <i>and caches</i>, you can say so.</p>
+
+<p>Yes, this might lead to longer function names. That's okay. <span style="color:seagreen; font-weight:bold">Clarity beats brevity every time.</span></p>
+
+<h2 id="examples">Examples</h2>
+
+<p>Some quite harmless examples where I would consider different options for the naming: </p>
+
+<code><pre class="prettyprint lang-js">
+// Lying: sound like it will always happen
+function killUnit(u) {
+    if (!u.isImmortal()) {
+        u.isDead = true;
+    }
+}
+
+// Honest
+function tryKillUnit(u) { /* ... */ }
+</pre></code>
+
+<code><pre class="prettyprint lang-js">
+// Lying: sounds like it just checks
+function validateUser(user) {
+    if (!user.email) {
+        throw new Error("Email required"); // Surprise: it throws!
+    }
+}
+
+// Better: "assert" indicates throwing
+function assertUserValid(user) { /* ... */ }
+</pre></code>
+
+<code><pre class="prettyprint lang-java">
+// Lying: sounds like it fetches a value every time
+public DataSet fetchPayments(String id) {
+    var cachedPayment = _paymentCache.get(id);
+    if (cachedPayment != null)
+        return cachedPayment;
+
+    return _paymentRepository.get(id);
+}
+
+// Better
+public DataSet getCachedOrFetchPayments { /* ... */ }
+</pre></code>
+
+<p>If the type system clearly defines a function as being able to fail, I would not worry too much about the naming. For instance:</p>
+
+<code><pre class="prettyprint lang-rust">
+// It is clear from the return type
+// that it can fail
+fn calculate_tax() -&gt; Result&lt;u64, Box&lt;dyn Error&gt;&gt; { /* ... */ }
+</pre></code>
+
+<p>Likewise, it can be clear from the type-system that a function can modify a value:</p>
+
+<code><pre class="prettyprint lang-rust">
+fn main() {
+    let values = vec![4,3,2,1];
+
+    // "read_first" probably removes the first element
+    // since the function requires a mutable vector
+    let first = read_first(&amp;mut values);
+
+    println!("{}", first);
+    println!("{:?}", values);
+}
+
+// Though arguably "take_first" would be a more appropriate name in any case :)
+</pre></code>
